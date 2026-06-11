@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import { dbConnect } from './src/config/db.js';
 
 //configure dotenv
 dotenv.config();
@@ -10,6 +11,10 @@ console.log("ENV PORT:", process.env.PORT);
 app.get('/', (req, res) => {
     res.status(200).json("Home page of  AI-Assisted Quotation Builder");
 });
+
+//connecting to db
+
+dbConnect();
 
 if (process.env.NODE_ENV !== 'production' && process.env.VERCEL !== '1') {
     app.listen(PORT, () => {
