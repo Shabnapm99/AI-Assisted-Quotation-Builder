@@ -2,7 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { dbConnect } from './src/config/db.js';
 import authRoutes from './src/routes/authRoutes.js';
-import clientRoutes from './src/routes/clientRoutes.js'
+import clientRoutes from './src/routes/clientRoutes.js';
+import quotationRoutes from './src/routes/quotationRoutes.js';
 import { validateToken } from './src/middlewares/authMiddleware.js';
 import cookieParser from 'cookie-parser';
 
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 
 app.use('/auth',authRoutes);
 app.use('/clients',validateToken,clientRoutes);
+app.use('/quotations',validateToken,quotationRoutes);
 
 //connecting to db
 

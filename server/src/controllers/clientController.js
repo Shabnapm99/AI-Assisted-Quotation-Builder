@@ -38,7 +38,9 @@ export const addClient = async (req, res) => {
 
         const newClient = await ClientModel.create(client);
 
-        const populatedClient = await ClientModel.findById(newClient._id).populate('createdBy', 'email').select('-__v');
+        const populatedClient = await ClientModel.findById(newClient._id)
+            .populate('createdBy', 'email')
+            .select('-__v');
         if (!populatedClient) {
             return res.status(400).json({ message: "Client not created" })
         }
@@ -68,7 +70,9 @@ export const addClient = async (req, res) => {
 export const getClients = async (req, res) => {
     try {
 
-        let clientsList = await ClientModel.find({}).select('-__v').populate("createdBy", "email").sort({ createdAt: -1 });
+        let clientsList = await ClientModel.find({}).select('-__v')
+            .populate("createdBy", "email")
+            .sort({ createdAt: -1 });
         res.status(200).json({ clients: clientsList })
 
     } catch (error) {
@@ -87,7 +91,9 @@ export const getClients = async (req, res) => {
 export const getAClient = async (req, res) => {
     try {
 
-        let client = await ClientModel.findById(req.params.id).select('-__v').populate('createdBy', 'email');
+        let client = await ClientModel.findById(req.params.id)
+            .select('-__v')
+            .populate('createdBy', 'email');
         if (!client) {
             return res.status(404).json({ message: "Client not found" })
         }
@@ -108,7 +114,8 @@ export const getAClient = async (req, res) => {
 export const updateClient = async (req, res) => {
     try {
 
-        let updatedClient = await ClientModel.findByIdAndUpdate({ _id: req.params.id, user: req.user._id }, req.body, { returnDocument: 'after' }).select('-__v');
+        let updatedClient = await ClientModel.findByIdAndUpdate({ _id: req.params.id, user: req.user._id }, req.body, { returnDocument: 'after' })
+            .select('-__v');
         res.status(200).json({
             message: "Client Data updated succesfully",
             client: updatedClient
