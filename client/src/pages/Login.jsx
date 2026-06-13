@@ -38,7 +38,7 @@ function Login() {
                 }))
                 setEmail('');
                 setPassword('');
-                navigate('/dashboard');
+                navigate('/dashboard/clients');
                 toast.success("LoggedIn successfully");
             }
 

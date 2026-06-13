@@ -131,7 +131,7 @@ function SideBar({ open, setOpen }) {
                     {/* Clients Link */}
                     <li>
                         <NavLink
-                            to="/dashboard"
+                            to="/dashboard/clients"
                             className={getLinkStyle}
                             onClick={() => setOpen(false)} // Closes mobile drawer automatically on click
                         >
@@ -143,7 +143,7 @@ function SideBar({ open, setOpen }) {
                     {/* Quotations Link */}
                     <li>
                         <NavLink
-                            to="/quotations"
+                            to="/dashboard/quotes"
                             className={getLinkStyle}
                             onClick={() => setOpen(false)}
                         >
