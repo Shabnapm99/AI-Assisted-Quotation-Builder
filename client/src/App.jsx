@@ -6,6 +6,7 @@ import Root from './routes/Root'
 import Quotations from './components/Quotations'
 import NewQuotation from './pages/NewQuotation'
 import Clients from './components/Clients'
+import DashBoard from './pages/DashBoard'
 
 // Router setup using createBrowserRouter
 const router = createBrowserRouter(
@@ -17,7 +18,7 @@ const router = createBrowserRouter(
     },
     {
       path: '/dashboard',
-      element: <Root />,
+      element: <DashBoard />,
       errorElement: <NotFound />,
       children: [
         {

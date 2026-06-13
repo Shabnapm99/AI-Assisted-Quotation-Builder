@@ -9,6 +9,8 @@ import { FaArrowRight } from "react-icons/fa";
 import { toast } from 'react-toastify';
 import { axiosInstance } from '../axios/axiosInstance';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setAuthState } from '../features/userSlice';
 
 function Login() {
 
@@ -18,6 +20,7 @@ function Login() {
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -29,8 +32,10 @@ function Login() {
             setLoading(true);
             let response = await axiosInstance.post('/auth/login', { email, password });
             if (response.status === 200) {
-                console.log("Logged in successfully");
-                console.log(response);
+                dispatch(setAuthState({
+                    isLoggedin: true,
+                    authUser: response?.data?.user
+                }))
                 setEmail('');
                 setPassword('');
                 navigate('/dashboard');
