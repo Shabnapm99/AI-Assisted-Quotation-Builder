@@ -7,6 +7,7 @@ import Quotations from './components/Quotations'
 import NewQuotation from './pages/NewQuotation'
 import Clients from './components/Clients'
 import DashBoard from './pages/DashBoard'
+import ProtectedRoutes from './routes/ProtectedRoutes'
 
 // Router setup using createBrowserRouter
 const router = createBrowserRouter(
@@ -18,21 +19,24 @@ const router = createBrowserRouter(
     },
     {
       path: '/dashboard',
-      element: <DashBoard />,
+      element: <ProtectedRoutes />,
       errorElement: <NotFound />,
       children: [
         {
           path: '/dashboard',
-          element: <Clients />
+          element: <DashBoard />,
+          children:[
+            {
+              path: '/dashboard/quotes',
+              element: <Quotations />
+            },
+            {
+              path: '/dashboard/newquote',
+              element: <NewQuotation />
+            }
+          ]
         },
-        {
-          path: '/dashboard/quote',
-          element: <Quotations />
-        },
-        {
-          path: '/dashboard/newquote',
-          element: <NewQuotation />
-        }
+
       ]
     }
   ]
