@@ -6,6 +6,7 @@ import clientRoutes from './src/routes/clientRoutes.js';
 import quotationRoutes from './src/routes/quotationRoutes.js';
 import { validateToken } from './src/middlewares/authMiddleware.js';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 //configure dotenv
 dotenv.config();
@@ -16,14 +17,18 @@ app.use(cookieParser());
 
 const PORT = process.env.PORT || 4000;
 app.use(express.json());
+app.use(cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true//to access the cookies
+}))
 
 app.get('/', (req, res) => {
     res.status(200).json("Home page of  AI-Assisted Quotation Builder");
 });
 
-app.use('/auth',authRoutes);
-app.use('/clients',validateToken,clientRoutes);
-app.use('/quotations',validateToken,quotationRoutes);
+app.use('/auth', authRoutes);
+app.use('/clients', validateToken, clientRoutes);
+app.use('/quotations', validateToken, quotationRoutes);
 
 //connecting to db
 
