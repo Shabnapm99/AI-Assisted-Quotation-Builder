@@ -23,7 +23,6 @@ const clientSchema = new Schema({
         type: String,
         trim: true,
         default: '',
-        required: true,
     },
     notes: {
         type: String,

@@ -1,0 +1,33 @@
+import { createSlice } from '@reduxjs/toolkit'
+
+const clientSlice = createSlice({
+    name: 'client',
+    initialState: {
+        clients: [],
+        selectedClient: null,
+        isEditing: false,
+        uniqueId: null
+    },
+    reducers: {
+        setClients: (state, action) => {
+            state.clients = action.payload;
+        },
+        setSelectedClient: (state, action) => {
+            state.selectedClient = action.payload
+        },
+        clearSelectedClient: (state) => {
+            state.selectedClient = null
+        },
+        setIsEditing: (state, action) => {
+            state.isEditing = action.payload.boolean;
+            state.uniqueId = action.payload.id;
+        },
+        removeClient: (state, action) => {
+            let clientId = action.payload
+            state.clients = state.clients.filter((client) => client._id != clientId)
+        }
+    }
+})
+
+export const { setClients, setSelectedClient, clearSelectedClient, setIsEditing, removeClient } = clientSlice.actions
+export default clientSlice.reducer

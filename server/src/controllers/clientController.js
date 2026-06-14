@@ -13,7 +13,7 @@ export const addClient = async (req, res) => {
         } = req.body;
 
         //validate for all required fields
-        if (!name || !company || !email || !phone) {
+        if (!name || !company || !email) {
             return res.status(400).json({ message: "Missing required fields" });
         }
 

@@ -37,7 +37,7 @@ function Header() {
                 <div className="h-8 w-px bg-outline-variant/30"></div>
                 <div className="flex items-center gap-3 group cursor-pointer">
                     <div className="text-right">
-                        <p className="text-label-md font-semibold text-on-surface">Administrator</p>
+                        <p className="text-label-md font-semibold text-on-surface">Admin</p>
                         {/* <p className="text-[11px] text-on-surface-variant">{user?.email}</p> */}
                     </div>
                     <div className="w-8 h-8 rounded-full border border-outline-variant group-hover:ring-2 group-hover:ring-secondary/30 transition-all flex justify-center items-center">
