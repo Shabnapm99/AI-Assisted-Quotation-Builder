@@ -10,6 +10,7 @@ import DashBoard from './pages/DashBoard'
 import ProtectedRoutes from './routes/ProtectedRoutes'
 import GuestRoutes from './routes/GuestRoutes'
 import ClientDetailsPage from './pages/ClientDetailsPage'
+import QuotationDetails from './pages/QuotationDetails'
 
 // Router setup using createBrowserRouter
 const router = createBrowserRouter(
@@ -48,11 +49,15 @@ const router = createBrowserRouter(
             },
             {
               path: 'clients/:id',
-              element:<ClientDetailsPage/>
+              element: <ClientDetailsPage />
             },
             {
               path: 'quotes',
               element: <Quotations />
+            },
+            {
+              path: 'quotes/:id',
+              element: <QuotationDetails />
             },
             {
               path: 'newquote',

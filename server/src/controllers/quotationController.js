@@ -88,7 +88,10 @@ export const getQuotationById = async (req, res) => {
 
         const items = await QuotationItemModel.find({ quotation: id }).select('-__v');
 
-        res.status(200).json({ quotation, items });
+        const quote = { ...quotation.toObject()//since quotation is a mongoose document,
+            , items }
+
+        res.status(200).json({ quote });
 
     } catch (error) {
         console.log(error.message);

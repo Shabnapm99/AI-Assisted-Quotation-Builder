@@ -8,6 +8,8 @@ import Footer from '../components/Footer'
 import { axiosInstance } from '../axios/axiosInstance'
 import { setClients } from '../features/clientSlice'
 import { useDispatch } from 'react-redux'
+import { setQuotes } from '../features/quotationSlice'
+import { toast } from 'react-toastify'
 
 function DashBoard() {
 
@@ -27,11 +29,30 @@ function DashBoard() {
 
         } catch (error) {
             console.error(`Error occured : ${error.message}`);
+            toast.error('Error while fetching the date')
+        }
+    }
+
+    const getQuotes = async () => {
+        try {
+
+            //from mongodb
+
+            let response = await axiosInstance.get('/quotations');
+            if (response.status === 200) {
+                console.log("quotations array:", response?.data?.quotations);
+                dispatch(setQuotes(response?.data?.quotations));
+            }
+
+        } catch (error) {
+            console.error(`Error occured : ${error.message}`);
+            toast.error('Error while fetching the date')
         }
     }
 
     useEffect(() => {
         getData();
+        getQuotes();
     }, [])
 
     return (

@@ -189,7 +189,7 @@ function ClientDetailsPage() {
                         <h3 className="text-lg font-semibold text-on-surface tracking-tight">Quotations</h3>
 
                         <button
-                            onClick={() => navigate(`/dashboard/quotations/new?clientId=${id}`)}
+                            onClick={() => navigate(`/dashboard/newquote`)}
                             className="px-4 py-2 bg-secondary text-on-secondary text-sm font-medium rounded-lg flex items-center gap-2 shadow-sm hover:opacity-90 active:scale-95 transition-all"
                         >
                             <FiPlus size={16} />

@@ -4,7 +4,7 @@ const quoteSlice = createSlice({
     name: 'quote',
     initialState: {
         quotes: [],
-        selectedQuote: null,
+        currentQuote: null,
         isEditing: false,
         uniqueId: null
     },
@@ -12,11 +12,11 @@ const quoteSlice = createSlice({
         setQuotes: (state, action) => {
             state.quotes = action.payload;
         },
-        setSelectedQuote: (state, action) => {
-            state.setSelectedQuote = action.payload
+        setCurrentQuote: (state, action) => {
+            state.currentQuote = action.payload
         },
-        clearSelectedQuote: (state) => {
-            state.clearSelectedQuote = null
+        clearCurrentQuote: (state) => {
+            state.currentQuote = null
         },
         setIsEditing: (state, action) => {
             state.isEditing = action.payload.boolean;
@@ -29,5 +29,5 @@ const quoteSlice = createSlice({
     }
 })
 
-export const { setQuotes, setSelectedQuote, clearSelectedQuote, setIsEditing, removeQuote } = quoteSlice.actions
+export const { setQuotes, setCurrentQuote, clearCurrentQuote, setIsEditing, removeQuote } = quoteSlice.actions
 export default quoteSlice.reducer
