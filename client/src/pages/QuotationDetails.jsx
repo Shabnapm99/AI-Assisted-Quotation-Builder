@@ -8,13 +8,16 @@ import { IoCallOutline, IoPersonOutline } from "react-icons/io5";
 import { MdOutlineMail } from "react-icons/md";
 import { axiosInstance } from '../axios/axiosInstance';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentQuote } from '../features/quotationSlice';
+import { removeQuote, setCurrentQuote, setIsEditing } from '../features/quotationSlice';
+import QuoteItemsTable from '../components/QuoteItemsTable';
+import { toast } from 'react-toastify';
+import { FiArrowLeft } from 'react-icons/fi';
 
 function QuotationDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const quote = useSelector((state)=>state.quote.currentQuote);
+    const quote = useSelector((state) => state.quote.currentQuote);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -41,8 +44,61 @@ function QuotationDetails() {
         return <div className="p-6 text-error text-center" >Quotation not found</div>;
     }
 
+    const handleDelete = async (itemId) => {
+        try {
+            let response = await axiosInstance.delete(`/quotations/${id}/items/${itemId}`)
+            const res = await axiosInstance.get(`/quotations/${id}`);
+            dispatch(setCurrentQuote(res.data.quote));
+            toast.success('Quotation item removed successfully');
+        } catch (error) {
+            toast.error('Could not complete deletion request');
+            console.log(`error occured: ${error.message}`)
+        }
+    }
+
+    const handleDeleteQuote = async () => {
+        if (!window.confirm(`Are you sure you want to permanently delete this quotation}?`)) {
+            return;
+        }
+        try {
+            let response = await axiosInstance.delete(`/quotations/${id}`);
+            if (response.status === 200) {
+                dispatch(removeQuote(id))
+                toast.success('Quotation removed successfully');
+                navigate('/dashboard/quotes');
+            }
+        } catch (error) {
+            console.log(`error occured: ${error.message}`)
+            toast.error('Could not complete deletion request');
+        }
+    }
+
+    const handleEditQuote = async () => {
+
+        try {
+            navigate('/dashboard/newquote');
+            dispatch(setIsEditing({
+                boolean: true,
+                id: id
+            }))
+
+        } catch (error) {
+            console.error(`Error deleting client: ${error.message}`);
+            toast.error('Could not complete edit request');
+        }
+    };
     return (
         <main className="flex-1 ps-8 space-y-8 mx-auto w-full min-h-full">
+            {/* Back Button */}
+            <div>
+                <button
+                    onClick={() => navigate('/dashboard/quotes')}
+                    className="flex items-center gap-2 text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors"
+                >
+                    <FiArrowLeft size={16} />
+                    Back to Directory
+                </button>
+            </div>
 
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -61,10 +117,12 @@ function QuotationDetails() {
                     hover:bg-surface-container-low transition-colors">
                         <IoMdDownload /> Download </button>
                     <button className="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg text-on-surface-variant 
-                    hover:bg-surface-container-low transition-colors">
+                    hover:bg-surface-container-low transition-colors"
+                        onClick={handleEditQuote}>
                         <CiEdit /> Edit </button>
                     <button className="flex items-center gap-2 px-4 py-2 bg-on-surface text-on-primary rounded-lg hover:opacity-90 active:scale-95 
-                    transition-all">
+                    transition-all"
+                        onClick={handleDeleteQuote}>
                         <MdDeleteOutline /> Delete </button> </div>
             </div>
 
@@ -74,13 +132,13 @@ function QuotationDetails() {
                 {/* LEFT */}
                 <div className="lg:col-span-8">
 
-                    <div className="rounded-xl border border-outline-variant/30 overflow-hidden bg-surface-container-lowest">
+                    <div className="rounded-xl border border-outline-variant/30 overflow-hidden px-2">
 
-                        <div className="px-6 py-4 border-b">
+                        <div className="px-6 py-4">
                             <h3 className="text-lg font-semibold">Quotation Items</h3>
                         </div>
-
-                        <div className="overflow-x-auto">
+                        <QuoteItemsTable quoteItems={quote.items} handleDelete={handleDelete} />
+                        {/* <div className="overflow-x-auto">
                             <table className="w-full text-left text-on-surface">
                                 <thead className="bg-surface-container-low text-sm">
                                     <tr>
@@ -107,7 +165,7 @@ function QuotationDetails() {
                                     ))}
                                 </tbody>
                             </table>
-                        </div>
+                        </div> */}
 
                         <div className="p-6 flex justify-end font-bold text-on-surface">
                             Grand Total: BD {quote.total_amount}

@@ -30,7 +30,7 @@ console.log(quotes)
                         <button onClick={() => navigate(`/dashboard/newquote`)}
                             className="px-4 py-2.5 bg-secondary text-on-secondary font-[14px] text-[14px] rounded-lg flex items-center gap-2 shadow-sm hover:opacity-90 active:scale-95 transition-all">
                             <span className="text-[18px]" data-icon="person_add"><FiPlus size={16} /></span>
-                            Add Client
+                            Add Quote
                         </button>
                     </div>
                 </div>

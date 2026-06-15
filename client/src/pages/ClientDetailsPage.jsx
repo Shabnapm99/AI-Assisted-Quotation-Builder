@@ -6,16 +6,22 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { axiosInstance } from '../axios/axiosInstance';
 import { toast } from 'react-toastify';
 import NewClient from './NewClient';
+import QuotesTable from '../components/QuotesTable';
 
 function ClientDetailsPage() {
 
     const [showAddModal, setShowModal] = useState(false);
+
     const client = useSelector((state) => state.client.selectedClient);
+    const quotes = useSelector((state) => state.quote.quotes)
+
     let dispatch = useDispatch();
     let navigate = useNavigate();
 
     const urlParam = useParams();
     const id = urlParam.id;
+
+    const clientQuotes = quotes.filter((quote) => quote.client._id === id)
 
     //Fetch client details
     const getClient = async () => {
@@ -54,17 +60,6 @@ function ClientDetailsPage() {
 
         try {
             setShowModal(true);
-            // let response = await axiosInstance.put(`/clients/${id}`);
-            // if (response.status === 200) {
-            //     dispatch(setIsEditing({
-            //         isEditing: true,
-            //         uniqueId: id
-            //     }))
-
-            //     toast.success('Client profile edited successfully');
-
-            // }
-
             dispatch(setIsEditing({
                 boolean: true,
                 id: id
@@ -183,7 +178,7 @@ function ClientDetailsPage() {
                     </div>
                 </div>
 
-                {/* --- FUTURE QUOTATION SECTION BLOCK --- */}
+                {/* --- QUOTATION SECTION  --- */}
                 <div className="pt-4 space-y-4">
                     <div className="flex items-center justify-between">
                         <h3 className="text-lg font-semibold text-on-surface tracking-tight">Quotations</h3>
@@ -197,10 +192,10 @@ function ClientDetailsPage() {
                         </button>
                     </div>
 
-                    {/* Placeholder Area for future Table rendering */}
-                    <div className="p-8 border-2 border-dashed border-outline-variant rounded-xl flex items-center justify-center text-on-surface-variant bg-surface-container-low/30">
-                        <p className="text-sm italic">Quotation Table Component Will Be Inserted Here</p>
-                    </div>
+                    {/* Clients Quotations table */}
+                    
+                        <QuotesTable quotes={clientQuotes} />
+                    
                 </div>
 
             </div>

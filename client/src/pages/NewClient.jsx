@@ -55,9 +55,9 @@ function NewClient({ onClose }) {
 
     const addClientData = async () => {
         try {
+             //Edit Client
             if (isEditing) {
-                //Edit Client
-
+               
                 try {
                     let response = await axiosInstance.put(`/clients/${id}`, formData);
                     if (response.status === 200) {
@@ -75,7 +75,7 @@ function NewClient({ onClose }) {
             }
             else {
 
-                //Add recipe
+                //Add client
                 try {
                     let response = await axiosInstance.post('/clients', formData)
                     const newClient = response?.data?.client;
@@ -109,7 +109,7 @@ function NewClient({ onClose }) {
                 <div className="flex items-center justify-between p-6 border-b border-outline-variant">
                     <div>
                         <h3 className="text-xl font-semibold text-on-surface tracking-tight">
-                            Add New Client
+                           {isEditing?"Edit Client" : "Add New Client"}
                         </h3>
                         <p className="text-sm text-on-surface-variant mt-0.5">
                             Fill in the details to create a new enterprise profile.
