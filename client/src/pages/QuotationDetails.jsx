@@ -12,6 +12,8 @@ import { removeQuote, setCurrentQuote, setIsEditing } from '../features/quotatio
 import QuoteItemsTable from '../components/QuoteItemsTable';
 import { toast } from 'react-toastify';
 import { FiArrowLeft } from 'react-icons/fi';
+import { useReactToPrint } from 'react-to-print';
+import { useRef } from "react";
 
 function QuotationDetails() {
     const { id } = useParams();
@@ -19,6 +21,14 @@ function QuotationDetails() {
     const dispatch = useDispatch();
     const quote = useSelector((state) => state.quote.currentQuote);
     const [loading, setLoading] = useState(true);
+
+    //Print logic
+    const contentToPrint = useRef(null);
+    
+
+const handlePrint = useReactToPrint({
+    contentRef: contentToPrint
+});
 
     useEffect(() => {
         const fetchQuote = async () => {
@@ -87,10 +97,12 @@ function QuotationDetails() {
             toast.error('Could not complete edit request');
         }
     };
+
+
     return (
-        <main className="flex-1 ps-8 space-y-8 mx-auto w-full min-h-full">
+        <main className="flex-1 ps-8 space-y-8 mx-auto w-full min-h-full" ref={contentToPrint}>
             {/* Back Button */}
-            <div>
+            <div className='print:hidden'>
                 <button
                     onClick={() => navigate('/dashboard/quotes')}
                     className="flex items-center gap-2 text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors"
@@ -101,20 +113,21 @@ function QuotationDetails() {
             </div>
 
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4" >
                 <div className="flex items-center gap-4">
                     <h2 className="font-semibold text-[28px] text-on-surface">
                         {quote.title}
                     </h2>
 
-                    <span className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700">
+                    <span className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700 print:hidden">
                         {quote.status}
                     </span>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 print:hidden">
                     <button className="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg text-on-surface-variant 
-                    hover:bg-surface-container-low transition-colors">
+                    hover:bg-surface-container-low transition-colors"
+                        onClick={handlePrint}>
                         <IoMdDownload /> Download </button>
                     <button className="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg text-on-surface-variant 
                     hover:bg-surface-container-low transition-colors"
@@ -123,11 +136,12 @@ function QuotationDetails() {
                     <button className="flex items-center gap-2 px-4 py-2 bg-on-surface text-on-primary rounded-lg hover:opacity-90 active:scale-95 
                     transition-all"
                         onClick={handleDeleteQuote}>
-                        <MdDeleteOutline /> Delete </button> </div>
+                        <MdDeleteOutline /> Delete </button>
+                </div>
             </div>
 
             {/* Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6" >
 
                 {/* LEFT */}
                 <div className="lg:col-span-8">
@@ -138,34 +152,6 @@ function QuotationDetails() {
                             <h3 className="text-lg font-semibold">Quotation Items</h3>
                         </div>
                         <QuoteItemsTable quoteItems={quote.items} handleDelete={handleDelete} />
-                        {/* <div className="overflow-x-auto">
-                            <table className="w-full text-left text-on-surface">
-                                <thead className="bg-surface-container-low text-sm">
-                                    <tr>
-                                        <th className="px-6 py-3">Description</th>
-                                        <th className="px-6 py-3 text-center">Quantity</th>
-                                        <th className="px-6 py-3 text-right">Unit Price</th>
-                                        <th className="px-6 py-3 text-right">Total</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    {quote.items?.map((item, index) => (
-                                        <tr key={item._id} className="border-t border-gray-300 hover:bg-surface-container-low/30">
-                                            <td className="px-6 py-4">
-                                                <div className="font-semibold">{item.title}</div>
-                                                <div className="text-sm text-gray-500">{item.description}</div>
-                                            </td>
-                                            <td className="px-6 py-4 text-center">{item.quantity}</td>
-                                            <td className="px-6 py-4 text-right">{item.unit_price} BD</td>
-                                            <td className="px-6 py-4 text-right font-medium">
-                                                {item.total} BD
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div> */}
 
                         <div className="p-6 flex justify-end font-bold text-on-surface">
                             Grand Total: BD {quote.total_amount}

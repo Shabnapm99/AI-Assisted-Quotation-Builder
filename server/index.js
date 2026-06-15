@@ -4,6 +4,7 @@ import { dbConnect } from './src/config/db.js';
 import authRoutes from './src/routes/authRoutes.js';
 import clientRoutes from './src/routes/clientRoutes.js';
 import quotationRoutes from './src/routes/quotationRoutes.js';
+import aiRouter from './src/routes/aiRoutes.js';
 import { validateToken } from './src/middlewares/authMiddleware.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -29,16 +30,21 @@ app.get('/', (req, res) => {
 app.use('/auth', authRoutes);
 app.use('/clients', validateToken, clientRoutes);
 app.use('/quotations', validateToken, quotationRoutes);
+app.use('/ai', validateToken, aiRouter)
 
 //connecting to db
 
 dbConnect();
 
 // Start Express server
-if (process.env.NODE_ENV !== 'production' && process.env.VERCEL !== '1') {
-    app.listen(PORT, () => {
-        console.log(`Server is running on port  http://localhost:${PORT}`);
-    });
-}
 
-export default app;//while deploying in versel we need to export app
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+// if (process.env.NODE_ENV !== 'production' && process.env.VERCEL !== '1') {
+//     app.listen(PORT, () => {
+//         console.log(`Server is running on port  http://localhost:${PORT}`);
+//     });
+// }
+
+// export default app;//while deploying in versel we need to export app

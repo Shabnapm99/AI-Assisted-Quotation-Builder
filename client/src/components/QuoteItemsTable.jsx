@@ -12,7 +12,7 @@ function QuoteItemsTable({ quoteItems,handleDelete }) {
                         <th className="px-6 py-3 text-right">Unit Price</th>
                         <th className="px-6 py-3 text-right">Total</th>
                         <th
-                            className="px-6 py-3 font-label-sm text-label-sm text-on-surface-variant border-b border-outline-variant/20 text-right">
+                            className="px-6 py-3 font-label-sm text-label-sm text-on-surface-variant border-b border-outline-variant/20 text-right print:hidden">
                             Actions</th>
                     </tr>
                 </thead>
@@ -30,7 +30,7 @@ function QuoteItemsTable({ quoteItems,handleDelete }) {
                                 {item.total} BD
                             </td>
 
-                            <td className="px-6 py-4 text-right">
+                            <td className="px-6 py-4 text-right print:hidden">
 
                                 {/* <button
                                     className="px-3 py-2 bg-emerald-400 text-on-secondary font-[14px] text-[14px] rounded-lg flex items-center gap-2 

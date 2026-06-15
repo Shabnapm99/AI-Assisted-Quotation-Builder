@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { axiosInstance } from '../axios/axiosInstance';
 import { setCurrentQuote, setQuotes } from '../features/quotationSlice';
-import { MdAdd, MdExpandMore,MdOutlineSaveAs, MdOutlineSend } from 'react-icons/md';
+import { MdAdd, MdExpandMore, MdOutlineSaveAs, MdOutlineSend } from 'react-icons/md';
 import { RiPsychotherapyLine } from "react-icons/ri";
 import { HiOutlineBolt } from "react-icons/hi2";
 import QuoteItemsTable from '../components/QuoteItemsTable';
@@ -19,7 +19,8 @@ function NewQuotation() {
   const isEditing = useSelector(state => state.quote.isEditing);
   const id = useSelector(state => state.quote.uniqueId);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
+  const [aiDraftLoading, setAiDraftLoading] = useState(false);
 
   // MAIN STATE
   const [formData, setFormData] = useState({
@@ -109,9 +110,9 @@ function NewQuotation() {
   const handleRemoveItem = (id) => {
     setItems(prev => prev.filter(i => i._id !== id));
 
-   
-      setDeletedItems(prev => [...prev, id]);
-    
+
+    setDeletedItems(prev => [...prev, id]);
+
   };
 
 
@@ -176,226 +177,227 @@ function NewQuotation() {
     }
   };
 
-    return (
-      <main className="px-10 min-h-screen">
-        <div className="max-w-full mx-auto">
-          {/* Page Header*/}
+  return (
+    <main className="px-10 min-h-screen">
+      <div className="max-w-full mx-auto">
+        {/* Page Header*/}
 
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-            <div>
-              <h2 className="font-medium text-[32px] tracking-tight text-on-background">
-                {isEditing ? "Edit Quotation" : "Create New Quotation"}
-              </h2>
-              <p className="text-sm text-on-surface-variant mt-1 hidden sm:block">
-                Set up your line items and pricing details for submission.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              {/* Save as Draft Button */}
-              <button
-                onClick={handleSaveAsDraft}
-                type="button"
-                className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium border border-outline-variant text-on-surface rounded-lg hover:bg-surface-container-low focus-visible:ring-2 focus-visible:ring-primary outline-none active:scale-[0.98] transition-all"
-                disabled={loading}>
-                <MdOutlineSaveAs className="text-lg text-on-surface-variant" />
-                <span>{loading ? 'Saving' : "Save"}</span>
-                <span className="hidden md:inline">as Draft</span>
-              </button>
-
-              {/* Send to Client Button */}
-              <button
-                type="button"
-                className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium bg-primary text-on-primary rounded-lg hover:opacity-95 hover:shadow-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none active:scale-[0.98] transition-all"
-              >
-                <MdOutlineSend className="text-lg" />
-                <span>Send</span>
-                <span className="hidden md:inline">to Client</span>
-              </button>
-            </div>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <div>
+            <h2 className="font-medium text-[32px] tracking-tight text-on-background">
+              {isEditing ? "Edit Quotation" : "Create New Quotation"}
+            </h2>
+            <p className="text-sm text-on-surface-variant mt-1 hidden sm:block">
+              Set up your line items and pricing details for submission.
+            </p>
           </div>
 
-          {/* Bento Grid Layout */}
-          <div className="grid grid-cols-12 gap-6">
-            {/*AI Input & Results */}
-            <div className="col-span-12 lg:col-span-8 space-y-6">
-              <section
-                className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-4 overflow-hidden relative">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            {/* Save as Draft Button */}
+            <button
+              onClick={handleSaveAsDraft}
+              type="button"
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium border border-outline-variant text-on-surface rounded-lg hover:bg-surface-container-low focus-visible:ring-2 focus-visible:ring-primary outline-none active:scale-[0.98] transition-all"
+              disabled={loading}>
+              <MdOutlineSaveAs className="text-lg text-on-surface-variant" />
+              <span>{loading ? 'Saving' : "Save"}</span>
+              <span className="hidden md:inline">as Draft</span>
+            </button>
 
-                <div className="flex items-center gap-3 mb-4">
-                  <div
-                    className="w-10 h-10 bg-secondary-container rounded-lg flex items-center justify-center text-on-secondary-container">
-                    <RiPsychotherapyLine/>
-                  </div>
-                  <div>
-                    <h3 className="text-[20px]">AI Draft Generator</h3>
-                    <p className="text-[14px] text-on-surface-variant">Paste client requirements to
-                      automatically build your quote.</p>
-                  </div>
+            {/* Send to Client Button */}
+            <button
+              type="button"
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium bg-primary text-on-primary rounded-lg hover:opacity-95 hover:shadow-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none active:scale-[0.98] transition-all"
+            >
+              <MdOutlineSend className="text-lg" />
+              <span>Send</span>
+              <span className="hidden md:inline">to Client</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Bento Grid Layout */}
+        <div className="grid grid-cols-12 gap-6">
+          {/*AI Input & Results */}
+          <div className="col-span-12 lg:col-span-8 space-y-6">
+            <section
+              className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-4 overflow-hidden relative">
+
+              <div className="flex items-center gap-3 mb-4">
+                <div
+                  className="w-10 h-10 bg-secondary-container rounded-lg flex items-center justify-center text-on-secondary-container">
+                  <RiPsychotherapyLine />
                 </div>
+                <div>
+                  <h3 className="text-[20px]">AI Draft Generator</h3>
+                  <p className="text-[14px] text-on-surface-variant">Paste client requirements to
+                    automatically build your quote.</p>
+                </div>
+              </div>
 
-                <div className="relative group">
-                  <textarea
-                    className="w-full bg-surface-container-low border-outline-variant/30 rounded-lg p-4 text-[16px] focus:ring-secondary focus:border-secondary transition-all"
-                    id="ai-input"
-                    placeholder="Example: Client needs a modern e-commerce website for a boutique fashion brand. Requires 8 pages, secure checkout, mobile responsiveness, and 3 months of priority support..."
-                  ></textarea>
-                  <div className="absolute bottom-4 right-4 flex gap-2">
+              <div className="relative group">
+                <textarea
+                  className="w-full bg-surface-container-low border-outline-variant/30 rounded-lg p-4 text-[16px] focus:ring-secondary focus:border-secondary transition-all"
+                  id="ai-input"
+                  placeholder="Example: Client needs a modern e-commerce website for a boutique fashion brand. Requires 8 pages, secure checkout, mobile responsiveness, and 3 months of priority support..."
+                ></textarea>
+                <div className="absolute bottom-4 right-4 flex gap-2">
+                  <button
+                    disabled={aiDraftLoading}
+                    className="bg-secondary text-on-secondary px-6 py-2 rounded-lg flex items-center gap-2 hover:shadow-lg active:scale-95 transition-all"
+                    id="generate-btn" onClick={() => generateAI()}>
+                    <HiOutlineBolt />
+                    {aiDraftLoading ? "Thinking..." : "Generate Draft"}
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            {/* Quotation Items section */}
+
+            <section
+              className=" "
+              id="quotation-items-section">
+              <QuoteItemsTable quoteItems={items} handleDelete={handleRemoveItem} />
+
+              <div className="p-5  rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden mt-6 bg-surface-container-lowest">
+                <h4 className="text-[16px] font-medium text-on-background mb-4">Add Custom Item</h4>
+
+                <div className="grid grid-cols-12 gap-4 items-end">
+                  {/* Item Name */}
+                  <div className="col-span-12 md:col-span-4">
+                    <label className="block text-[12px] text-on-surface-variant mb-1">Item Title</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., UI/UX Design Setup"
+                      name='title'
+                      value={newItem.title}
+                      className="w-full text-sm bg-surface-container-low border border-outline-variant/30 rounded-lg p-2.5 focus:ring-secondary focus:border-secondary transition-all"
+                      onChange={handleItemChange} />
+                  </div>
+
+                  {/* Description */}
+                  <div className="col-span-12 md:col-span-4">
+                    <label className="block text-[12px] text-on-surface-variant mb-1">Description</label>
+                    <input
+                      type="text"
+                      name='description'
+                      value={newItem.description}
+                      placeholder="e.g., Wireframing and high-fidelity mockups"
+                      className="w-full text-sm bg-surface-container-low border border-outline-variant/30 rounded-lg p-2.5 focus:ring-secondary focus:border-secondary transition-all"
+                      onChange={handleItemChange} />
+                  </div>
+
+                  {/* Quantity */}
+                  <div className="col-span-6 md:col-span-11/12 lg:col-span-1">
+                    <label className="block text-[12px] text-on-surface-variant mb-1">Qty</label>
+                    <input
+                      name='quantity'
+                      value={newItem.quantity}
+                      type="number"
+                      min="1"
+                      placeholder="1"
+                      className="w-full text-sm bg-surface-container-low border border-outline-variant/30 rounded-lg p-2.5 focus:ring-secondary focus:border-secondary transition-all text-center"
+                      onChange={handleItemChange} />
+                  </div>
+
+                  {/* Price */}
+                  <div className="col-span-6 md:col-span-2">
+                    <label className="block text-[12px] text-on-surface-variant mb-1">Price (BD)</label>
+                    <input
+                      type="number"
+                      name='unit_price'
+                      value={newItem.unit_price}
+                      placeholder="0.00"
+                      className="w-full text-sm bg-surface-container-low border border-outline-variant/30 rounded-lg p-2.5 focus:ring-secondary focus:border-secondary transition-all"
+                      onChange={handleItemChange} />
+                  </div>
+
+                  {/* Add Action Button */}
+                  <div className="col-span-12 md:col-span-1">
                     <button
-                      className="bg-secondary text-on-secondary px-6 py-2 rounded-lg flex items-center gap-2 hover:shadow-lg active:scale-95 transition-all"
-                      id="generate-btn" onClick={() => generateAI()}>
-                      <HiOutlineBolt />
-                      Generate Draft
+                      type="button"
+                      className="w-full bg-secondary-container text-on-secondary-container hover:bg-secondary hover:text-on-secondary transition-all p-2.5 rounded-lg flex items-center justify-center font-medium shadow-sm group"
+                      title="Add Item"
+                      onClick={handleAddItem}>
+                      <MdAdd className="text-xl group-hover:scale-110 transition-transform" />
                     </button>
                   </div>
                 </div>
-              </section>
+              </div>
 
-              {/* Quotation Items section */}
+            </section>
 
-              <section
-                className=" "
-                id="quotation-items-section">
-                <QuoteItemsTable quoteItems={items} handleDelete={handleRemoveItem} />
+          </div>
 
-                <div className="p-5  rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden mt-6 bg-surface-container-lowest">
-                  <h4 className="text-[16px] font-medium text-on-background mb-4">Add Custom Item</h4>
+          {/* Quotation Details Sidebar */}
+          <div className="col-span-12 lg:col-span-4 space-y-6">
+            <section className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-5 sticky top-24">
+              <h3 className="text-[20px] font-medium text-on-background mb-6">Quotation Details</h3>
 
-                  <div className="grid grid-cols-12 gap-4 items-end">
-                    {/* Item Name */}
-                    <div className="col-span-12 md:col-span-4">
-                      <label className="block text-[12px] text-on-surface-variant mb-1">Item Title</label>
-                      <input
-                        type="text"
-                        placeholder="e.g., UI/UX Design Setup"
-                        name='title'
-                        value={newItem.title}
-                        className="w-full text-sm bg-surface-container-low border border-outline-variant/30 rounded-lg p-2.5 focus:ring-secondary focus:border-secondary transition-all"
-                        onChange={handleItemChange} />
-                    </div>
+              <div className="space-y-6">
+                {/* Title */}
+                <div>
+                  <label className="block text-[14px] font-medium text-on-surface-variant mb-2">
+                    Quotation Title
+                  </label>
+                  <input
+                    type="text"
+                    name='title'
+                    value={formData.title}
+                    placeholder="e.g. Website Design - Spring 2026"
+                    className="w-full bg-surface border border-outline-variant/50 rounded-lg p-3 text-[15px] focus:ring-2 focus:ring-secondary/50 focus:border-secondary transition-all outline-none"
+                    onChange={handleChange} />
+                </div>
 
-                    {/* Description */}
-                    <div className="col-span-12 md:col-span-4">
-                      <label className="block text-[12px] text-on-surface-variant mb-1">Description</label>
-                      <input
-                        type="text"
-                        name='description'
-                        value={newItem.description}
-                        placeholder="e.g., Wireframing and high-fidelity mockups"
-                        className="w-full text-sm bg-surface-container-low border border-outline-variant/30 rounded-lg p-2.5 focus:ring-secondary focus:border-secondary transition-all"
-                        onChange={handleItemChange} />
-                    </div>
-
-                    {/* Quantity */}
-                    <div className="col-span-6 md:col-span-11/12 lg:col-span-1">
-                      <label className="block text-[12px] text-on-surface-variant mb-1">Qty</label>
-                      <input
-                        name='quantity'
-                        value={newItem.quantity}
-                        type="number"
-                        min="1"
-                        placeholder="1"
-                        className="w-full text-sm bg-surface-container-low border border-outline-variant/30 rounded-lg p-2.5 focus:ring-secondary focus:border-secondary transition-all text-center"
-                        onChange={handleItemChange} />
-                    </div>
-
-                    {/* Price */}
-                    <div className="col-span-6 md:col-span-2">
-                      <label className="block text-[12px] text-on-surface-variant mb-1">Price (BD)</label>
-                      <input
-                        type="number"
-                        name='unit_price'
-                        value={newItem.unit_price}
-                        placeholder="0.00"
-                        className="w-full text-sm bg-surface-container-low border border-outline-variant/30 rounded-lg p-2.5 focus:ring-secondary focus:border-secondary transition-all"
-                        onChange={handleItemChange} />
-                    </div>
-
-                    {/* Add Action Button */}
-                    <div className="col-span-12 md:col-span-1">
-                      <button
-                        type="button"
-                        className="w-full bg-secondary-container text-on-secondary-container hover:bg-secondary hover:text-on-secondary transition-all p-2.5 rounded-lg flex items-center justify-center font-medium shadow-sm group"
-                        title="Add Item"
-                        onClick={handleAddItem}>
-                        <MdAdd className="text-xl group-hover:scale-110 transition-transform" />
-                      </button>
-                    </div>
+                {/* Client Selection */}
+                <div>
+                  <label className="block text-[14px] font-medium text-on-surface-variant mb-2">
+                    Select Client
+                  </label>
+                  <div className="relative">
+                    <select className="w-full bg-surface border border-outline-variant/50 rounded-lg p-3 text-[15px] focus:ring-2 focus:ring-secondary/50 focus:border-secondary appearance-none transition-all outline-none text-on-surface"
+                      name='client' value={formData.client} onChange={handleChange}>
+                      <option value="">Select Client</option>
+                      {clients?.map((client) => (
+                        <option
+                          key={client._id}
+                          value={client._id}>
+                          {client.company}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-xl">
+                      <MdExpandMore />
+                    </span>
                   </div>
                 </div>
 
-              </section>
+                {/* Summary Divider */}
+                <hr className="border-outline-variant/20 my-4" />
 
-            </div>
-
-            {/* Quotation Details Sidebar */}
-            <div className="col-span-12 lg:col-span-4 space-y-6">
-              <section className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-5 sticky top-24">
-                <h3 className="text-[20px] font-medium text-on-background mb-6">Quotation Details</h3>
-
-                <div className="space-y-6">
-                  {/* Title */}
-                  <div>
-                    <label className="block text-[14px] font-medium text-on-surface-variant mb-2">
-                      Quotation Title
-                    </label>
-                    <input
-                      type="text"
-                      name='title'
-                      value={formData.title}
-                      placeholder="e.g. Website Design - Spring 2026"
-                      className="w-full bg-surface border border-outline-variant/50 rounded-lg p-3 text-[15px] focus:ring-2 focus:ring-secondary/50 focus:border-secondary transition-all outline-none"
-                      onChange={handleChange} />
+                {/* Financial Summary Preview */}
+                <div className="bg-surface-container-low rounded-xl p-4 space-y-3">
+                  <div className="flex justify-between text-[14px] text-on-surface-variant">
+                    <span>Subtotal</span>
+                    <span className="font-medium">{subtotal} BD</span>
                   </div>
-
-                  {/* Client Selection */}
-                  <div>
-                    <label className="block text-[14px] font-medium text-on-surface-variant mb-2">
-                      Select Client
-                    </label>
-                    <div className="relative">
-                      <select className="w-full bg-surface border border-outline-variant/50 rounded-lg p-3 text-[15px] focus:ring-2 focus:ring-secondary/50 focus:border-secondary appearance-none transition-all outline-none text-on-surface"
-                        name='client' value={formData.client} onChange={handleChange}>
-                        <option value="">Select Client</option>
-                        {clients?.map((client) => (
-                          <option
-                            key={client._id}
-                            value={client._id}>
-                            {client.company}
-                          </option>
-                        ))}
-                      </select>
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-xl">
-                        <MdExpandMore />
-                      </span>
-                    </div>
+                  <div className="flex justify-between text-[14px] text-on-surface-variant">
+                    <span>Estimated Tax</span>
+                    <span className="font-medium">0.00 BD</span>
                   </div>
-
-                  {/* Summary Divider */}
-                  <hr className="border-outline-variant/20 my-4" />
-
-                  {/* Financial Summary Preview */}
-                  <div className="bg-surface-container-low rounded-xl p-4 space-y-3">
-                    <div className="flex justify-between text-[14px] text-on-surface-variant">
-                      <span>Subtotal</span>
-                      <span className="font-medium">{subtotal} BD</span>
-                    </div>
-                    <div className="flex justify-between text-[14px] text-on-surface-variant">
-                      <span>Estimated Tax</span>
-                      <span className="font-medium">0.00 BD</span>
-                    </div>
-                    <div className="border-t border-outline-variant/30 my-2 pt-2 flex justify-between text-[16px] text-on-surface font-semibold">
-                      <span>Total Amount</span>
-                      <span className="text-secondary">{subtotal} BD</span>
-                    </div>
+                  <div className="border-t border-outline-variant/30 my-2 pt-2 flex justify-between text-[16px] text-on-surface font-semibold">
+                    <span>Total Amount</span>
+                    <span className="text-secondary">{subtotal} BD</span>
                   </div>
                 </div>
-              </section>
-            </div>
+              </div>
+            </section>
           </div>
         </div>
-      </main>
-    )
+      </div>
+    </main>
+  )
 }
 
 export default NewQuotation;
