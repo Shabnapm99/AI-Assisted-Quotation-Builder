@@ -26,9 +26,9 @@ function QuoteItemsTable({ quoteItems, handleDelete, handleEdit }) {
                                 <div className="text-sm text-gray-500">{item.description}</div>
                             </td>
                             <td className="px-6 py-4 text-center">{item.quantity}</td>
-                            <td className="px-6 py-4 text-right">{item.unit_price} BD</td>
+                            <td className="px-6 py-4 text-right">{item.unit_price}BD</td>
                             <td className="px-6 py-4 text-right font-medium">
-                                {item.total} BD
+                                {item.total}BD
                             </td>
 
                             <td className="px-6 py-4 text-right print:hidden">
