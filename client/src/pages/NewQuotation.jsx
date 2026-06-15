@@ -18,11 +18,15 @@ function NewQuotation() {
   const quotes = useSelector(state => state.quote.quotes);
   const isEditing = useSelector(state => state.quote.isEditing);
   const id = useSelector(state => state.quote.uniqueId);
-  const [editingItemId, setEditingItemId] = useState(null);//To know whick quoteItem id editing
 
+  const [editingItemId, setEditingItemId] = useState(null);//To know whick quoteItem id editing
   const [loading, setLoading] = useState(false)
   const [aiDraftLoading, setAiDraftLoading] = useState(false);
   const [requirement, setRequirement] = useState('');
+  const [summary, setSummary] = useState('');
+  const [questions, setQuestions] = useState([]);
+  const [items, setItems] = useState([]);
+  const [deletedItems, setDeletedItems] = useState([]);
 
   // MAIN STATE
   const [formData, setFormData] = useState({
@@ -30,9 +34,6 @@ function NewQuotation() {
     client: '',
     status: 'draft'
   });
-
-  const [items, setItems] = useState([]);
-  const [deletedItems, setDeletedItems] = useState([]);
 
   const [newItem, setNewItem] = useState({
     title: '',
@@ -102,7 +103,7 @@ function NewQuotation() {
     const quantity = Number(newItem.quantity);
     const unit_price = Number(newItem.unit_price || 0);
 
-    // If edit mode, replace the existing one with edited one when click submit
+    // If items edit mode, replace the existing one with edited one when click submit
     if (editingItemId) {
       setItems(prev =>
         prev.map(item =>
@@ -148,10 +149,11 @@ function NewQuotation() {
 
   const handleRemoveItem = (id) => {
     setItems(prev => prev.filter(i => i._id !== id));
-    //in case of editing since we need to remove item from DB as well mark deletedItems.
-    setDeletedItems(prev => [...prev, id]);
-
-  };
+    const isRealId = typeof id === 'string' && id.length === 24;
+    if (isRealId) {
+      setDeletedItems(prev => [...prev, id]);
+    }
+  };//to restrict the fakeId reaching to the DB
 
 
   // SUBTOTAL
@@ -169,7 +171,7 @@ function NewQuotation() {
       // CREATE MODE
       if (!isEditing) {
         const res = await axiosInstance.post('/quotations', formData);
-        quotationId = res.data.quote._id;
+        quotationId = res.data.quotation._id;
       }
       // EDIT MODE
       else {
@@ -180,20 +182,23 @@ function NewQuotation() {
       const newItems = items.filter(i => i.isNew);
 
       await Promise.all(
-        newItems.map(item =>
-          axiosInstance.post(`/quotations/${quotationId}/items`, item)
-        )
+        newItems.map(item => {
+          const { _id, isNew, ...itemData } = item;//destructure out _id and isNew before sending
+          return axiosInstance.post(`/quotations/${quotationId}/items`, itemData)
+        })
       );
 
       // ITEMS - UPDATE EXISTING
       const existingItems = items.filter(i => !i.isNew);
 
       await Promise.all(
-        existingItems.map(item =>
-          axiosInstance.put(
-            `/quotations/${quotationId}/items/${item._id}`,
-            item
+        existingItems.map(item => {
+          const { isNew, ...itemData } = item;
+          return axiosInstance.put(`/quotations/${quotationId}/items/${item._id}`,
+            itemData
           )
+        }
+
         )
       );
 
@@ -224,14 +229,34 @@ function NewQuotation() {
       setAiDraftLoading(true);
       let response = await axiosInstance.post('/ai/draft', { requirement })
       console.log(response?.data?.suggested_items);
-      setItems(response?.data?.suggested_items);
-      setFormData({ title: response?.data?.project_type })
+      // setItems(response?.data?.suggested_items);
+      //every item should have a unique id to work edit and delete perfectly
+      setItems(
+        response?.data?.suggested_items.map(item => ({
+          ...item,
+          _id: Date.now() + Math.random(),
+          isNew: true,
+          total: item.quantity * item.unit_price
+        }))
+      );
+      // setFormData({ title: response?.data?.project_type });
+      setFormData(prev => ({
+        ...prev,
+        title: response?.data?.project_type
+      }));
+      setSummary(response?.data?.summary);
+      setQuestions(response?.data?.questions_to_ask_client);
+      setRequirement('');
+      console.log("NEW ITEMS");
+      console.log(items.filter(i => i.isNew));
+
+      console.log("EXISTING ITEMS");
+      console.log(items.filter(i => !i.isNew));
 
     } catch (error) {
       console.error(error);
       toast.error('Failed to generate the draft');
     } finally {
-      setRequirement('');
       setAiDraftLoading(false);
     }
   }
@@ -260,17 +285,17 @@ function NewQuotation() {
               disabled={loading}>
               <MdOutlineSaveAs className="text-lg text-on-surface-variant" />
               <span>{loading ? 'Saving' : "Save"}</span>
-              <span className="hidden md:inline">as Draft</span>
+              <span className="hidden lg:inline">as Draft</span>
             </button>
 
             {/* Send to Client Button */}
             <button
               type="button"
-              className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium bg-primary text-on-primary rounded-lg hover:opacity-95 hover:shadow-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none active:scale-[0.98] transition-all"
+              className="flex-1 hidden lg:flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium bg-primary text-on-primary rounded-lg hover:opacity-95 hover:shadow-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none active:scale-[0.98] transition-all"
             >
               <MdOutlineSend className="text-lg" />
               <span>Send</span>
-              <span className="hidden md:inline">to Client</span>
+              <span className="hidden lg:inline">to Client</span>
             </button>
           </div>
         </div>
@@ -458,7 +483,57 @@ function NewQuotation() {
           </div>
         </div>
       </div>
-    </main>
+
+      {/* Summary and questions to ask client from AI draft */}
+      {summary && (
+        <div className="space-y-6 bg-surface p-6 rounded-2xl border border-outline-variant/30 print:hidden">
+
+          {/* Summary Section */}
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold text-on-surface flex items-center gap-2">
+              AI Summary
+            </h3>
+            <p className="text-sm md:text-base text-on-surface-variant leading-relaxed">
+              {summary}
+            </p>
+          </div>
+
+          {/* Summary Divider */}
+          <hr className="border-outline-variant/30" />
+
+          {/* Questions Section */}
+          {questions && questions.length > 0 && (
+            <div className="bg-surface-container-low rounded-xl p-5 border border-outline-variant/20 space-y-4">
+              <div>
+                <h3 className="text-base font-semibold text-on-surface">
+                  Questions to ask Client
+                </h3>
+                <p className="text-xs text-on-surface-variant">
+                  Review these insights before your next client touchpoint.
+                </p>
+              </div>
+
+              <ul className="space-y-3">
+                {questions.map((ques, index) => (
+                  <li
+                    key={index}
+                    className="flex items-start gap-3 text-sm text-on-surface-variant bg-surface p-3 rounded-lg border border-outline-variant/10 shadow-sm transition-all hover:border-outline-variant/40"
+                  >
+                    {/* Clean bullet indicator or question number */}
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                      {index + 1}
+                    </span>
+                    <span className="pt-0.5 leading-tight">{ques}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+        </div>
+      )}
+
+    </main >
   )
 }
 

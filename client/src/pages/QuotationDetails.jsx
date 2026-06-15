@@ -108,7 +108,12 @@ function QuotationDetails() {
         try {
             let res = await axiosInstance.put(`/quotations/${id}`, { status: newStatus });
             if (res.status === 200) {
+                dispatch(setCurrentQuote({
+                    ...quote,
+                    status: newStatus
+                }));
                 console.log("Updated successfully:", res.data);
+                toast.success('Status updated');
 
             }
 
@@ -138,10 +143,6 @@ function QuotationDetails() {
                     <h2 className="font-semibold text-[28px] text-on-surface">
                         {quote.title}
                     </h2>
-
-                    {/* <span className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700 print:hidden">
-                        {quote.status}
-                    </span> */}
                     <select
                         value={quote.status}
                         onChange={(e) => handleStatusChange(e.target.value)}

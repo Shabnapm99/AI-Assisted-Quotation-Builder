@@ -125,6 +125,7 @@
 import { GoogleGenAI } from '@google/genai';
 import fs from 'fs/promises';
 import path from 'path';
+import AILogModel from '../models/AILogModel.js';
 
 // Automatically loads the GEMINI_API_KEY from environment variables
 const ai = new GoogleGenAI({});
@@ -135,16 +136,22 @@ const ai = new GoogleGenAI({});
  * Do not log retries to console to keep production logs clean.
  */
 const callWithRetry = async (apiCall, maxRetries = 5) => {
-    let delay = 1000; // start with 1 second
+    let delay = 1000;
     for (let attempt = 0; attempt < maxRetries; attempt++) {
         try {
             return await apiCall();
         } catch (error) {
-            if (attempt === maxRetries - 1) {
-                throw error; // All attempts failed, throw the final error
+            const status = error?.status || error?.response?.status;
+
+            // Don't retry on client errors — they won't fix themselves
+            const isRetryable = !status || status === 429 || status >= 500;
+
+            if (!isRetryable || attempt === maxRetries - 1) {
+                throw error;
             }
-            await new Promise((resolve) => setTimeout(resolve, delay));
-            delay *= 2; // Double the wait time for the next attempt
+
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay *= 2;
         }
     }
 };
@@ -169,7 +176,7 @@ export const generateAIDraft = async (req, res) => {
         const quotationSchema = {
             type: 'OBJECT',
             properties: {
-                project_type: { 
+                project_type: {
                     type: 'STRING',
                     description: 'The type of project (e.g. website development, mobile app development)'
                 },
@@ -193,7 +200,7 @@ export const generateAIDraft = async (req, res) => {
                     description: 'Questions to clarify scope with the client',
                     items: { type: 'STRING' }
                 },
-                summary: { 
+                summary: {
                     type: 'STRING',
                     description: 'A brief 1-2 sentence executive summary of the clients needs'
                 }
@@ -202,7 +209,7 @@ export const generateAIDraft = async (req, res) => {
         };
 
         // Request generation with exponential backoff wrapper
-        const response = await callWithRetry(() => 
+        const response = await callWithRetry(() =>
             ai.models.generateContent({
                 model: 'gemini-2.5-flash',
                 contents: finalPrompt,
@@ -215,12 +222,22 @@ export const generateAIDraft = async (req, res) => {
 
         // Safely parse the strict JSON output and send it back to the client
         const parsedDraft = JSON.parse(response.text);
+        // Log to DB
+        await AILogModel.create({
+            requirement,
+            prompt: finalPrompt,
+            raw_response: response.text,
+            project_type: parsedDraft.project_type || '',
+            items_count: parsedDraft.suggested_items?.length || 0,
+            success: true,
+            createdBy: req.user?._id || null,
+        }).catch(err => console.error('AI log failed:', err));
         res.status(200).json(parsedDraft);
 
     } catch (error) {
         console.error("Gemini API Error:", error);
-        res.status(503).json({ 
-            error: "The estimation service is currently experiencing high demand. Please try again in a few moments." 
+        res.status(503).json({
+            error: "The estimation service is currently experiencing high demand. Please try again in a few moments."
         });
     }
 };

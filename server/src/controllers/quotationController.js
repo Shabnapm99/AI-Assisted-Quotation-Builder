@@ -23,7 +23,7 @@ export const createQuotation = async (req, res) => {
         const newQuotation = await QuotationModel.create({
             client,
             title,
-            status: status || 'Draft',
+            status: status || 'draft',
             createdBy: req.user._id,
         });
 
