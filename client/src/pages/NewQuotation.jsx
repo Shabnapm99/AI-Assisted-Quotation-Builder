@@ -18,9 +18,11 @@ function NewQuotation() {
   const quotes = useSelector(state => state.quote.quotes);
   const isEditing = useSelector(state => state.quote.isEditing);
   const id = useSelector(state => state.quote.uniqueId);
+  const [editingItemId, setEditingItemId] = useState(null);//To know whick quoteItem id editing
 
   const [loading, setLoading] = useState(false)
   const [aiDraftLoading, setAiDraftLoading] = useState(false);
+  const [requirement, setRequirement] = useState('');
 
   // MAIN STATE
   const [formData, setFormData] = useState({
@@ -77,25 +79,62 @@ function NewQuotation() {
     setNewItem(prev => ({ ...prev, [name]: value }));
   };
 
+  //Handle edit Item
+
+  const handleEditItem = (id) => {
+    const itemToEdit = items.find((item) => item._id === id);
+    if (!itemToEdit) return;
+    console.log(itemToEdit)
+    setNewItem({
+      title: itemToEdit.title,
+      description: itemToEdit.description,
+      quantity: itemToEdit.quantity,
+      unit_price: itemToEdit.unit_price
+    });
+    setEditingItemId(id);
+  }
+
   // ADD ITEM LOCALLY
 
   const handleAddItem = () => {
-    if (!newItem.title || !newItem.quantity) return;
+    if (!newItem.title || !newItem.quantity || !newItem.unit_price || !newItem.description) return toast.error("Please provide all details");
 
     const quantity = Number(newItem.quantity);
     const unit_price = Number(newItem.unit_price || 0);
 
-    const item = {
-      _id: Date.now(),
-      title: newItem.title,
-      description: newItem.description,
-      quantity,
-      unit_price,
-      total: quantity * unit_price,
-      isNew: true
-    };
+    // If edit mode, replace the existing one with edited one when click submit
+    if (editingItemId) {
+      setItems(prev =>
+        prev.map(item =>
+          item._id === editingItemId
+            ? {
+              ...item,
+              title: newItem.title,
+              description: newItem.description,
+              quantity,
+              unit_price,
+              total: quantity * unit_price
+            }
+            : item
+        )
+      );
 
-    setItems(prev => [...prev, item]);
+      setEditingItemId(null);
+    }
+    else {
+      const item = {
+        _id: Date.now(),
+        title: newItem.title,
+        description: newItem.description,
+        quantity,
+        unit_price,
+        total: quantity * unit_price,
+        isNew: true
+      };
+
+      setItems(prev => [...prev, item]);
+
+    }
 
     setNewItem({
       title: '',
@@ -109,8 +148,7 @@ function NewQuotation() {
 
   const handleRemoveItem = (id) => {
     setItems(prev => prev.filter(i => i._id !== id));
-
-
+    //in case of editing since we need to remove item from DB as well mark deletedItems.
     setDeletedItems(prev => [...prev, id]);
 
   };
@@ -122,6 +160,7 @@ function NewQuotation() {
   // SAVE as draft
 
   const handleSaveAsDraft = async () => {
+    if (!formData.title || !formData.client) return toast.error("Please add required fields")
     try {
       setLoading(true);
 
@@ -171,11 +210,31 @@ function NewQuotation() {
 
     } catch (err) {
       console.error(err);
-      toast.error('Save failed');
+      toast.error(`Save failed due to :${err.message}`);
     } finally {
       setLoading(false);
     }
   };
+
+  //Generate AI draft
+
+  const generateAI = async () => {
+    if (!requirement) return toast.error("Please type the requirement")
+    try {
+      setAiDraftLoading(true);
+      let response = await axiosInstance.post('/ai/draft', { requirement })
+      console.log(response?.data?.suggested_items);
+      setItems(response?.data?.suggested_items);
+      setFormData({ title: response?.data?.project_type })
+
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to generate the draft');
+    } finally {
+      setRequirement('');
+      setAiDraftLoading(false);
+    }
+  }
 
   return (
     <main className="px-10 min-h-screen">
@@ -239,7 +298,10 @@ function NewQuotation() {
                 <textarea
                   className="w-full bg-surface-container-low border-outline-variant/30 rounded-lg p-4 text-[16px] focus:ring-secondary focus:border-secondary transition-all"
                   id="ai-input"
+                  name="requirement"
+                  value={requirement}
                   placeholder="Example: Client needs a modern e-commerce website for a boutique fashion brand. Requires 8 pages, secure checkout, mobile responsiveness, and 3 months of priority support..."
+                  onChange={(e) => setRequirement(e.target.value)}
                 ></textarea>
                 <div className="absolute bottom-4 right-4 flex gap-2">
                   <button
@@ -258,7 +320,7 @@ function NewQuotation() {
             <section
               className=" "
               id="quotation-items-section">
-              <QuoteItemsTable quoteItems={items} handleDelete={handleRemoveItem} />
+              <QuoteItemsTable quoteItems={items} handleDelete={handleRemoveItem} handleEdit={handleEditItem} />
 
               <div className="p-5  rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden mt-6 bg-surface-container-lowest">
                 <h4 className="text-[16px] font-medium text-on-background mb-4">Add Custom Item</h4>

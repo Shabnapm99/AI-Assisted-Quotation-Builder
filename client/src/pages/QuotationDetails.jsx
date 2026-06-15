@@ -67,7 +67,7 @@ const handlePrint = useReactToPrint({
     }
 
     const handleDeleteQuote = async () => {
-        if (!window.confirm(`Are you sure you want to permanently delete this quotation}?`)) {
+        if (!window.confirm(`Are you sure you want to permanently delete this quotation?`)) {
             return;
         }
         try {
@@ -151,7 +151,7 @@ const handlePrint = useReactToPrint({
                         <div className="px-6 py-4">
                             <h3 className="text-lg font-semibold">Quotation Items</h3>
                         </div>
-                        <QuoteItemsTable quoteItems={quote.items} handleDelete={handleDelete} />
+                        <QuoteItemsTable quoteItems={quote.items} handleDelete={handleDelete} handleEdit={handleEditQuote}/>
 
                         <div className="p-6 flex justify-end font-bold text-on-surface">
                             Grand Total: BD {quote.total_amount}
