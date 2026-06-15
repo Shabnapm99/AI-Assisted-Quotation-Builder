@@ -21,14 +21,15 @@ function QuotationDetails() {
     const dispatch = useDispatch();
     const quote = useSelector((state) => state.quote.currentQuote);
     const [loading, setLoading] = useState(true);
+    const [status, setStatus] = useState('draft');
 
     //Print logic
     const contentToPrint = useRef(null);
-    
 
-const handlePrint = useReactToPrint({
-    contentRef: contentToPrint
-});
+
+    const handlePrint = useReactToPrint({
+        contentRef: contentToPrint
+    });
 
     useEffect(() => {
         const fetchQuote = async () => {
@@ -53,7 +54,7 @@ const handlePrint = useReactToPrint({
     if (!quote) {
         return <div className="p-6 text-error text-center" >Quotation not found</div>;
     }
-
+    //Delete qute item
     const handleDelete = async (itemId) => {
         try {
             let response = await axiosInstance.delete(`/quotations/${id}/items/${itemId}`)
@@ -66,6 +67,7 @@ const handlePrint = useReactToPrint({
         }
     }
 
+    //Delete Quotation
     const handleDeleteQuote = async () => {
         if (!window.confirm(`Are you sure you want to permanently delete this quotation?`)) {
             return;
@@ -83,6 +85,7 @@ const handlePrint = useReactToPrint({
         }
     }
 
+    //Edit a quotation
     const handleEditQuote = async () => {
 
         try {
@@ -95,6 +98,23 @@ const handlePrint = useReactToPrint({
         } catch (error) {
             console.error(`Error deleting client: ${error.message}`);
             toast.error('Could not complete edit request');
+        }
+    };
+
+    //Handle status change
+    const handleStatusChange = async (newStatus) => {
+        setStatus(newStatus);
+
+        try {
+            let res = await axiosInstance.put(`/quotations/${id}`, { status: newStatus });
+            if (res.status === 200) {
+                console.log("Updated successfully:", res.data);
+
+            }
+
+        } catch (error) {
+            console.error("Status update failed:", error.message);
+            toast.error("Status update failed:", error.message)
         }
     };
 
@@ -119,9 +139,19 @@ const handlePrint = useReactToPrint({
                         {quote.title}
                     </h2>
 
-                    <span className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700 print:hidden">
+                    {/* <span className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700 print:hidden">
                         {quote.status}
-                    </span>
+                    </span> */}
+                    <select
+                        value={quote.status}
+                        onChange={(e) => handleStatusChange(e.target.value)}
+                        className="px-3 py-1 text-base border-b bg-gray-50 rounded-md  print:hidden"
+                    >
+                        <option value="draft">DRAFT</option>
+                        <option value="sent">SENT</option>
+                        <option value="approved">APPROVED</option>
+                        <option value="rejected">REJECTED</option>
+                    </select>
                 </div>
 
                 <div className="flex items-center gap-3 print:hidden">
@@ -151,7 +181,7 @@ const handlePrint = useReactToPrint({
                         <div className="px-6 py-4">
                             <h3 className="text-lg font-semibold">Quotation Items</h3>
                         </div>
-                        <QuoteItemsTable quoteItems={quote.items} handleDelete={handleDelete} handleEdit={handleEditQuote}/>
+                        <QuoteItemsTable quoteItems={quote.items} handleDelete={handleDelete} handleEdit={handleEditQuote} />
 
                         <div className="p-6 flex justify-end font-bold text-on-surface">
                             Grand Total: BD {quote.total_amount}
