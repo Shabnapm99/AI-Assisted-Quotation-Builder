@@ -107,7 +107,9 @@ The project also includes workflow automation using n8n. When a quotation's stat
 
 ## 🔮 Future Enhancements
 
+- Improve CRUD functionality for clients and quotes to ensure they stay in sync with the UI.
 - Search and filter options on clients and quotations
+- Form validations
 - Improve security with refresh tokens, stricter input validation, and API protection measures.
 - Basic tests for total calculation or AI validation. 
 - Bilingual quotation support (English/Arabic). 
