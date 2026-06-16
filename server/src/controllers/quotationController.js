@@ -88,8 +88,10 @@ export const getQuotationById = async (req, res) => {
 
         const items = await QuotationItemModel.find({ quotation: id }).select('-__v');
 
-        const quote = { ...quotation.toObject()//since quotation is a mongoose document,
-            , items }
+        const quote = {
+            ...quotation.toObject()//since quotation is a mongoose document,
+            , items
+        }
 
         res.status(200).json({ quote });
 
@@ -130,6 +132,35 @@ export const updateQuotation = async (req, res) => {
         const populatedQuotation = await QuotationModel.findById(quotation._id)
             .populate('client', 'name company email')
             .select('-__v');
+
+        //Fire n8n webhook only when approved
+        if (status === 'approved') {
+            const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL;
+            if (n8nWebhookUrl) {
+                try {
+                    const n8nRes = await fetch(n8nWebhookUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            quotation_id: populatedQuotation._id,
+                            title: populatedQuotation.title,
+                            total_amount: populatedQuotation.total_amount,
+                            status: populatedQuotation.status,
+                            client: {
+                                name: populatedQuotation.client?.name,
+                                company: populatedQuotation.client?.company,
+                                email: populatedQuotation.client?.email,
+                            },
+                            createdAt: populatedQuotation.createdAt,
+                            approved_at: new Date().toISOString(),
+                        })
+                    });
+                    console.log('n8n webhook sent:', n8nRes.status);
+                } catch (err) {
+                    console.error('n8n webhook failed:', err.message);
+                }
+            }
+        }
 
         res.status(200).json({
             message: "Quotation updated successfully",

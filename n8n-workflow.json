@@ -1,0 +1,99 @@
+{
+  "name": "QuoteAI-workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "180bb6ea-4522-4233-bc73-84b4256f8aca",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4572960f-47dc-4ddc-8efa-6e072fd4738e",
+      "name": "Webhook",
+      "webhookId": "180bb6ea-4522-4233-bc73-84b4256f8aca"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=Quotation Approved!\nQuote: {{ $json.body.title }}\nClient: {{ $json.body.client.company }}\nTotal:{{ $json.body.total_amount }}\nApproved:{{ $json.body.approved_at }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "f45086f4-7f35-410f-93d2-96fbed34688f",
+      "name": "Discord",
+      "webhookId": "ad7ee1b3-c919-4e05-add8-1ae7e7aea918",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "8kKMogDZ1fLPv6vI",
+          "name": "Discord Webhook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Notification sent\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        416,
+        0
+      ],
+      "id": "8c8af956-167b-4e56-ad7e-4ec5c2713ab8",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "48d63465-8efa-4e63-86cf-bf953962312b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "452c3fe6b39f0db0a78df4eb38aac3bb074e27387872b7ef0a6b9ab829502d73"
+  },
+  "nodeGroups": [],
+  "id": "OuiSjPPyLlrJnAhU",
+  "tags": []
+}
