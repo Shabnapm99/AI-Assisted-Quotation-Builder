@@ -130,7 +130,7 @@ function QuotationDetails() {
             <div className='print:hidden'>
                 <button
                     onClick={() => navigate('/dashboard/quotes')}
-                    className="flex items-center gap-2 text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors"
+                    className="flex items-center gap-2 text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors cursor-pointer"
                 >
                     <FiArrowLeft size={16} />
                     Back to Directory
@@ -157,15 +157,15 @@ function QuotationDetails() {
 
                 <div className="flex items-center gap-3 print:hidden">
                     <button className="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg text-on-surface-variant 
-                    hover:bg-surface-container-low transition-colors"
+                    hover:bg-surface-container-low transition-colors cursor-pointer"
                         onClick={handlePrint}>
                         <IoMdDownload /> Download </button>
                     <button className="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg text-on-surface-variant 
-                    hover:bg-surface-container-low transition-colors"
+                    hover:bg-surface-container-low transition-colors cursor-pointer"
                         onClick={handleEditQuote}>
                         <CiEdit /> Edit </button>
                     <button className="flex items-center gap-2 px-4 py-2 bg-on-surface text-on-primary rounded-lg hover:opacity-90 active:scale-95 
-                    transition-all"
+                    transition-all cursor-pointer"
                         onClick={handleDeleteQuote}>
                         <MdDeleteOutline /> Delete </button>
                 </div>

@@ -93,7 +93,7 @@ function SideBar({ open, setOpen }) {
             {/* Footer / Logout */}
             <div className="px-4 mt-auto">
                 <button
-                    className="w-full py-3 px-4 bg-secondary text-on-secondary rounded-lg font-bold text-[15px] flex items-center justify-center gap-4 hover:opacity-90 transition-all"
+                    className="w-full py-3 px-4 bg-secondary text-on-secondary rounded-lg font-bold text-[15px] flex items-center justify-center gap-4 hover:opacity-90 transition-all cursor-pointer"
                     onClick={handleLogout}>
                     <CgLogOut size={24} />
                     <span>Logout</span>

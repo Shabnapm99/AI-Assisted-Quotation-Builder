@@ -28,7 +28,7 @@ console.log(quotes)
                     </div>
                     <div className="flex gap-2">
                         <button onClick={() => navigate(`/dashboard/newquote`)}
-                            className="px-4 py-2.5 bg-secondary text-on-secondary font-[14px] text-[14px] rounded-lg flex items-center gap-2 shadow-sm hover:opacity-90 active:scale-95 transition-all">
+                            className="px-4 py-2.5 bg-secondary text-on-secondary font-[14px] text-[14px] rounded-lg flex items-center gap-2 shadow-sm hover:opacity-90 active:scale-95 transition-all cursor-pointer">
                             <span className="text-[18px]" data-icon="person_add"><FiPlus size={16} /></span>
                             Add Quote
                         </button>

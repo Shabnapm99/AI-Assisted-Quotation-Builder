@@ -223,7 +223,7 @@ function NewClient({ onClose }) {
                         </button>
                         <button
                             type="submit"
-                            className="px-5 py-2.5 bg-secondary text-on-secondary font-medium text-sm rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all">
+                            className="px-5 py-2.5 bg-secondary text-on-secondary font-medium text-sm rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all cursor-pointer">
                             Save Client
                         </button>
                     </div>

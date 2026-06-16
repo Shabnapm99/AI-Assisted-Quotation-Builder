@@ -101,7 +101,7 @@ function Login() {
                                     id="password" name="password" placeholder="password123" required="" type="password"
                                     type={showPassword ? "text" : "password"}
                                     onChange={(e) => setPassword(e.target.value)} />
-                                <button className="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface transition-colors" type="button">
+                                <button className="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface transition-colors cursor-pointer" type="button">
                                     <span className="text-[20px]">
                                         {showPassword ? <MdOutlineVisibility className='' onClick={() => setShowPassword(false)} /> : <MdOutlineVisibilityOff className='' onClick={() => setShowPassword(true)} />}
                                     </span>
@@ -124,7 +124,7 @@ function Login() {
 
                         {/* Sign In Button */}
                         <button
-                            className="w-full bg-primary py-4 rounded-lg font-[16px] text-[16px] text-on-primary flex items-center justify-center gap-2 hover:bg-on-primary-fixed transition-all active:scale-[0.98] shadow-sm"
+                            className="w-full bg-primary py-4 rounded-lg font-[16px] text-[16px] text-on-primary flex items-center justify-center gap-2 hover:bg-on-primary-fixed transition-all active:scale-[0.98] shadow-sm cursor-pointer"
                             type="submit" disabled={loading}>
                             <span>{loading ? "Signing In...." : "Sign In"}</span>
                             <span className="material-symbols-outlined text-[18px]"><FaArrowRight /></span>
@@ -135,7 +135,7 @@ function Login() {
                     <div className="mt-8 pt-4 border-t border-outline-variant/30 text-center">
                         <p className="font-[14px] text-[14px] text-on-surface-variant">
                             Don't have an account? <a
-                                className="font-[14px] text-[14px] text-on-surface hover:underline decoration-secondary underline-offset-4"
+                                className="font-[14px] text-[14px] text-on-surface hover:underline decoration-secondary underline-offset-4 cursor-pointer"
                                 href="#">Contact your administrator.</a>
                         </p>
                     </div>

@@ -96,14 +96,14 @@ function ClientDetailsPage() {
                     <div className="flex items-center gap-2 self-end sm:self-auto">
                         <button
                             onClick={handleEditClient}
-                            className="px-3.5 py-2 bg-surface-container-low border border-outline-variant text-on-surface text-sm font-medium rounded-lg flex items-center gap-2 shadow-sm hover:bg-surface-container transition-all active:scale-95"
+                            className="px-3.5 py-2 bg-surface-container-low border border-outline-variant text-on-surface text-sm font-medium rounded-lg flex items-center gap-2 shadow-sm hover:bg-surface-container transition-all active:scale-95 cursor-pointer"
                         >
                             <FiEdit3 size={15} />
                             Edit Client
                         </button>
                         <button
                             onClick={handleDeleteClient}
-                            className="px-3.5 py-2 bg-error-container/20 border border-error/30 text-error text-sm font-medium rounded-lg flex items-center gap-2 shadow-sm hover:bg-error-container hover:text-on-error-container transition-all active:scale-95"
+                            className="px-3.5 py-2 bg-error-container/20 border border-error/30 text-error text-sm font-medium rounded-lg flex items-center gap-2 shadow-sm hover:bg-error-container hover:text-on-error-container transition-all active:scale-95 cursor-pointer"
                         >
                             <FiTrash2 size={15} />
                             Delete Profile
@@ -185,7 +185,7 @@ function ClientDetailsPage() {
 
                         <button
                             onClick={() => navigate(`/dashboard/newquote`)}
-                            className="px-4 py-2 bg-secondary text-on-secondary text-sm font-medium rounded-lg flex items-center gap-2 shadow-sm hover:opacity-90 active:scale-95 transition-all"
+                            className="px-4 py-2 bg-secondary text-on-secondary text-sm font-medium rounded-lg flex items-center gap-2 shadow-sm hover:opacity-90 active:scale-95 transition-all cursor-pointer"
                         >
                             <FiPlus size={16} />
                             Add Quotation

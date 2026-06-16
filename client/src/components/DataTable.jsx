@@ -38,7 +38,7 @@ function DataTable({ clients }) {
                         {
                             clients.map((client) => {
                                 return (
-                                    <tr key={client._id} className="hover:bg-surface-container-low/30 transition-colors group"
+                                    <tr key={client._id} className="hover:bg-surface-container-low/30 transition-colors group cursor-pointer"
                                         onClick={() => navigate(`/dashboard/clients/${client._id}`)}>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">

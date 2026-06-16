@@ -36,18 +36,18 @@ function QuotesTable({ quotes }) {
               quotes.length > 0 ? (quotes.map((quote) => {
                 return(
 
-                <tr key={quote._id} className="hover:bg-surface-container-low/30 transition-colors group"
+                <tr key={quote._id} className="hover:bg-surface-container-low/30 transition-colors group cursor-pointer"
                   onClick={() => navigate(`/dashboard/quotes/${quote._id}`)}>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <span className="text-body-md font-semibold text-on-surface">{quote.client.company}</span>
+                      <span className="text-body-md font-semibold text-on-surface">{quote?.client?.company}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-body-md text-on-surface-variant">{quote.title}
+                  <td className="px-6 py-4 text-body-md text-on-surface-variant">{quote?.title}
                   </td>
-                  <td className="px-6 py-4 text-body-md text-on-surface-variant">{quote.status}
+                  <td className="px-6 py-4 text-body-md text-on-surface-variant">{quote?.status}
                   </td>
-                  <td className="px-6 py-4 text-body-md text-on-surface-variant">{quote.total_amount}</td>
+                  <td className="px-6 py-4 text-body-md text-on-surface-variant">{quote?.total_amount}</td>
                   <td className="px-6 py-4 text-body-md text-on-surface-variant">{new Date(quote.createdAt).toLocaleString()}</td>
                 </tr>)
               })) : (

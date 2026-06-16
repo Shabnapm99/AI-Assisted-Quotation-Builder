@@ -281,7 +281,7 @@ function NewQuotation() {
             <button
               onClick={handleSaveAsDraft}
               type="button"
-              className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium border border-outline-variant text-on-surface rounded-lg hover:bg-surface-container-low focus-visible:ring-2 focus-visible:ring-primary outline-none active:scale-[0.98] transition-all"
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium border border-outline-variant text-on-surface rounded-lg hover:bg-surface-container-low focus-visible:ring-2 focus-visible:ring-primary outline-none active:scale-[0.98] transition-all cursor-pointer"
               disabled={loading}>
               <MdOutlineSaveAs className="text-lg text-on-surface-variant" />
               <span>{loading ? 'Saving' : "Save"}</span>
@@ -331,7 +331,7 @@ function NewQuotation() {
                 <div className="absolute bottom-4 right-4 flex gap-2">
                   <button
                     disabled={aiDraftLoading}
-                    className="bg-secondary text-on-secondary px-6 py-2 rounded-lg flex items-center gap-2 hover:shadow-lg active:scale-95 transition-all"
+                    className="bg-secondary text-on-secondary px-6 py-2 rounded-lg flex items-center gap-2 hover:shadow-lg active:scale-95 transition-all cursor-pointer"
                     id="generate-btn" onClick={() => generateAI()}>
                     <HiOutlineBolt />
                     {aiDraftLoading ? "Thinking..." : "Generate Draft"}
@@ -404,7 +404,7 @@ function NewQuotation() {
                   <div className="col-span-12 md:col-span-1">
                     <button
                       type="button"
-                      className="w-full bg-secondary-container text-on-secondary-container hover:bg-secondary hover:text-on-secondary transition-all p-2.5 rounded-lg flex items-center justify-center font-medium shadow-sm group"
+                      className="w-full bg-secondary-container text-on-secondary-container hover:bg-secondary hover:text-on-secondary transition-all p-2.5 rounded-lg flex items-center justify-center font-medium shadow-sm group cursor-pointer"
                       title="Add Item"
                       onClick={handleAddItem}>
                       <MdAdd className="text-xl group-hover:scale-110 transition-transform" />
