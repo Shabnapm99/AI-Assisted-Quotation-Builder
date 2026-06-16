@@ -71,7 +71,8 @@ export const login = async (req, res) => {
                 user: {
                     _id: user._id,
                     email: user.email
-                }
+                },
+                token
             })
         } else {
             return res.status(400).json({ message: "The provided email or password is not matching" })
