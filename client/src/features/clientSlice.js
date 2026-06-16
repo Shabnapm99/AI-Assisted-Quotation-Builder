@@ -25,9 +25,13 @@ const clientSlice = createSlice({
         removeClient: (state, action) => {
             let clientId = action.payload
             state.clients = state.clients.filter((client) => client._id != clientId)
+        },
+        resetClientForm: (state) => {
+            state.isEditing = false;
+            state.uniqueId = null;
         }
     }
 })
 
-export const { setClients, setSelectedClient, clearSelectedClient, setIsEditing, removeClient } = clientSlice.actions
+export const { setClients, setSelectedClient, clearSelectedClient, setIsEditing, removeClient, resetClientForm } = clientSlice.actions
 export default clientSlice.reducer

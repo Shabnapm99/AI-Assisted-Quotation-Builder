@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { validateForm } from '../utility/formValidation';
 import { axiosInstance } from '../axios/axiosInstance';
 import { useDispatch, useSelector } from 'react-redux';
-import { setClients, setSelectedClient } from '../features/clientSlice';
+import { resetClientForm, setClients, setSelectedClient } from '../features/clientSlice';
 
 
 function NewClient({ onClose }) {
@@ -21,20 +21,30 @@ function NewClient({ onClose }) {
         notes: ''
     });
 
-    //Load the data to the form if it is editing
+    //Load the data to the form if it is editing. always reset form first, then fill if editing
     useEffect(() => {
-        console.log(isEditing);
-        if (isEditing) {
-            let editingClient = clients.find((client) => client?._id === id);
+        if (isEditing && id) {
+            const editingClient = clients.find((client) => client?._id === id);
+            if (editingClient) {
+                setFormData({
+                    name: editingClient.name || '',
+                    company: editingClient.company || '',
+                    email: editingClient.email || '',
+                    phone: editingClient.phone || '',
+                    notes: editingClient.notes || ''
+                });
+            }
+        } else {
+            // clear form when opening in add mode
             setFormData({
-                name: editingClient?.name || '',
-                company: editingClient?.company || '',
-                email: editingClient?.email || "",
-                phone: editingClient?.phone || '',
-                notes: editingClient?.notes || ''
-            })
+                name: '',
+                company: '',
+                email: '',
+                phone: '',
+                notes: ''
+            });
         }
-    }, [isEditing, id])
+    }, [isEditing, id]);
 
     const handleChange = (e) => {
 
@@ -63,6 +73,7 @@ function NewClient({ onClose }) {
                     if (response.status === 200) {
                         let updatedClient = response?.data?.client;
                        dispatch(setSelectedClient(updatedClient));
+                       dispatch(resetClientForm());
                         // dispatch(setClients(clients.map((client) => client._id === id ? updatedClient : client)));
                         toast.success('Client profile edited successfully');
                     }

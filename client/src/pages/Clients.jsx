@@ -2,14 +2,21 @@ import React, { useState } from 'react'
 import { FiUserPlus } from "react-icons/fi";
 import DataTable from '../components/DataTable';
 import StatCard from '../components/StatCard';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import StatSection from '../components/StatSection';
 import NewClient from './NewClient';
+import { resetClientForm } from '../features/clientSlice';
 
 function Clients() {
-
+    
+    const dispatch = useDispatch();
     const clients = useSelector((state) => state.client.clients);
     const [showAddModal, setShowModal] = useState(false);
+    // always reset editing state when modal closes
+    const handleCloseModal = () => {
+        dispatch(resetClientForm());
+        setShowModal(false);
+    };
 
     return (
         <section className='grow overflow-y-auto p-8 bg-background'>
@@ -27,7 +34,7 @@ function Clients() {
                     <div className="flex gap-2">
                         <button
                             className="px-4 py-2.5 bg-secondary text-on-secondary font-[14px] text-[14px] rounded-lg flex items-center gap-2 
-                            shadow-sm hover:opacity-90 active:scale-95 transition-all" onClick={() => setShowModal(true)}>
+                            shadow-sm hover:opacity-90 active:scale-95 transition-all cursor-pointer" onClick={() => setShowModal(true)}>
                             <span className="text-[18px]" data-icon="person_add"><FiUserPlus /></span>
                             Add Client
                         </button>
@@ -37,7 +44,7 @@ function Clients() {
             </div>
 
             {
-                showAddModal && <NewClient onClose={() => setShowModal(false)} />
+                showAddModal && <NewClient onClose={handleCloseModal} />
             }
 
         </section>
