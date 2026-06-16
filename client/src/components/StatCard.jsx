@@ -7,8 +7,7 @@ function StatCard({title,count}) {
             <p className="text-[12px] text-on-surface-variant uppercase tracking-wider mb-2">{title}</p>
             <div className="flex items-end justify-between">
                 <span className="text-[24px] font-bold text-on-surface">{count}</span>
-                {/* <span
-                    className="text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full text-[12px] font-bold">+12%</span> */}
+                
             </div>
         </div>
     )

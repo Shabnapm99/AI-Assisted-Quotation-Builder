@@ -17,22 +17,21 @@
 
 ## 📖 Description
 
-AI Quotation Builder is a full-stack web application designed to help sales teams and freelancers create client quotations faster and more accurately using AI assistance.
-Instead of manually drafting every line item from scratch, users can paste a short client request into the app and instantly receive an AI-generated draft — complete with suggested services, estimated hours, and clarifying questions to ask the client. The user reviews and edits everything before saving, keeping full control over the final quote.
-The app covers the complete quotation lifecycle: from managing client records, creating and editing quotations with line items, tracking quote status (Draft → Sent → Approved / Rejected), all the way to automated notifications when a quote is approved — powered by an n8n webhook integration.
+AI-Assisted Quotation Builder is a modern CRM-style application that helps businesses manage clients and quotations efficiently. By leveraging AI-generated suggestions and workflow automation through n8n, the application reduces manual work and improves operational efficiency.
 
 ## ✨ Features
 
-- 🧾 Create and manage quotations easily
-- 👤 Client management (add, edit, delete clients)
-- 📦 Add multiple items per quotation
-- 🤖 AI-assisted suggestions for quote generation (pricing, descriptions, etc.)
-- 💰 Automatic total calculation for quotes
-- 📊 Real-time quote updates
-- 🔍 Search and filter quotes
-- 📁 Export quotes
-- 🔐 Authentication & secure access
-- 📱 Responsive UI for all devices
+- Secure user authentication and authorization using JWT-based authentication.
+- Create and manage quotations easily
+- Client management (add, edit, delete clients)
+- Add multiple items per quotation
+- AI-assisted suggestions for quote generation (pricing, descriptions, etc.)
+- Automatic total calculation for quotes
+- Real-time quote updates
+- Search and filter quotes
+- Export quotes
+- Authentication & secure access
+- Responsive UI for all devices
 
 
 ## 🛠️ Technologies Used
@@ -45,30 +44,6 @@ The app covers the complete quotation lifecycle: from managing client records, c
 - **Libraries:** react-Router-Dom, react-icons,react-toastify,react-to-print,React-Redux
 - **Version Control:** Git & GitHub
 - **Deployment:** Vercel (FrontEnd), Render(Backend)
-
-## Folder structure
-
-client/
- └── src/
-      ├── components/
-      ├── pages/
-      ├── features/
-      ├── store/
-      ├── routes/
-      └── utility/
-
-
-server/
- ├── src/
- │    ├── config/
- │    ├── controllers/
- │    ├── middlewares/
- │    ├── models/
- │    ├── routes/
- │    └── utils/
- ├── prompts/
- ├── index.js
- ├── .env
 
 ## 🚀 Setup Instructions
 
@@ -95,6 +70,7 @@ PORT=4000
 JWT_EXPIRESIN = "expiry-time"
 GEMINI_API_KEY=gemini-api-key
 FRONTEND_URL='http://localhost:5173'
+N8N_WEBHOOK_URL = n8n webhook url
 
 - Create a .env file inside the client folder and add:
 
@@ -105,6 +81,7 @@ VITE_BASE_URL="http://localhost:4000/"
 - npm run dev - FrontEnd
 
 5. Open http://localhost:5173/ &in your browser
+6. Set up n8n webhook to get discord notification when a user clicks approved.
 
 
 ## 📱 Responsive Design
@@ -119,12 +96,23 @@ This application is fully responsive and tested on:
 |----------|-------------|---------|
 | ![1](assets/screenshots/addQuote.png) | ![2](assets/screenshots/clientsList.png) | ![3](assets/screenshots/Quote.png) |
 
+## Approach
+
+This project is a full-stack quotation management application built to make creating and managing quotations faster and more efficient.
+
+Users can log in with a seeded test account and manage clients, quotations, and quotation items through a simple and intuitive dashboard. To reduce manual effort, the application integrates the Google Gemini API, which can suggest quotation items based on user input, helping users generate quotations more quickly.
+
+The project also includes workflow automation using n8n. When a quotation's status is updated to "Approved", a notification is automatically sent to Discord, demonstrating how business processes can be streamlined through automation.
+
+
 ## 🔮 Future Enhancements
-- n8n integration
+
 - Search and filter options on clients and quotations
+- Improve security with refresh tokens, stricter input validation, and API protection measures.
 - Basic tests for total calculation or AI validation. 
 - Bilingual quotation support (English/Arabic). 
 - Improve UI/UX
+- advanced n8n integration such as Email delivery of quotes directly from the app
 - PDF export with branding
 - Email quotation directly to clients
 - Advanced analytics dashboard

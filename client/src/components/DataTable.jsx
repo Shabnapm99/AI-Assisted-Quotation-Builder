@@ -42,9 +42,6 @@ function DataTable({ clients }) {
                                         onClick={() => navigate(`/dashboard/clients/${client._id}`)}>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                {/* <div
-                                        className="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant flex items-center justify-center font-bold text-[12px]">
-                                        JS</div> */}
                                                 <span className="text-body-md font-semibold text-on-surface">{client.name}</span>
                                             </div>
                                         </td>
@@ -59,31 +56,6 @@ function DataTable({ clients }) {
                                                 active
                                             </span>
                                         </td>
-                                        {/* <td className="px-6 py-4 text-right">
-
-                                            <button
-                                                className="px-3 py-2 bg-emerald-400 text-on-secondary font-[14px] text-[14px] rounded-lg flex items-center gap-2 
-                                                    shadow-sm hover:opacity-90 active:scale-95 transition-all" onClick={() => setShowModal(true)}>
-
-                                                Add Quote
-                                            </button>
-
-                                            {/* <div
-                                                className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button
-                                                    className="p-1.5 text-on-surface-variant hover:text-secondary hover:bg-secondary/10 rounded transition-all"
-                                                    title="Edit">
-                                                    <span className="text-[20px]"
-                                                        data-icon="edit"><FaEdit/></span>
-                                                </button>
-                                                <button
-                                                    className="p-1.5 text-on-surface-variant hover:text-error hover:bg-error/10 rounded transition-all"
-                                                    title="Delete">
-                                                    <span className=" text-[20px]"
-                                                        data-icon="delete"><MdDelete/></span>
-                                                </button>
-                                            </div> }
-                                        </td> */}
                                     </tr>
                                 )
                             })

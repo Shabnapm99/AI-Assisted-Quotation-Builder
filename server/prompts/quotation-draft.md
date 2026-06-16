@@ -14,11 +14,11 @@ Return this exact structure:
     {
       "title": "string",
       "description": "string",
-      "quantity": 1,
-      "unit_price": null,
+      "quantity": <realistic number based on scope, NOT always 1>,
+      "unit_price": <realistic price in BD, or null if unknown>,
       "estimated_hours": 0
     }
   ],
-  "questions_to_ask_client": ["string"],
-  "summary": "string"
+  "questions_to_ask_client": ["specific question relevant to this project"],
+  "summary": "2-3 sentence overview of the project scope and key considerations"
 }
